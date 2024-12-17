@@ -271,3 +271,219 @@ Table Техподдержка {
 
 </details>
 
+### C4 Model
+
+#### Level 1: System Context
+![image](https://github.com/user-attachments/assets/6f2c9eda-f314-4478-a717-bbd1980ab585)
+
+<details>
+  <summary>Код C1</summary>
+  
+```plaintext
+
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+' System Context
+System_Boundary(c1, "Автомойка") {
+
+    System(auto_wash, "Автомойка", "Система управления автомойкой", "Управляет бронированиями, услугами, платежами и пользователями")
+
+}
+
+Person(client, "Клиент", "Пользователь, заказывающий услуги автомойки")
+Person(admin, "Администратор", "Сотрудник автомойки, управляющий системой")
+
+
+System_Ext(payment_system, "Платежная система", "Обрабатывает платежи")
+System_Ext(notification_system, "Система уведомлений", "Отправляет уведомления пользователям")
+System_Ext(accounting_system, "Система учета", "Система финансового учета")
+System_Ext(map_system, "Картографическая система", "Предоставляет информацию о местоположении")
+
+
+Rel(client, auto_wash, "Запись на мойку, просмотр цен, оплата, отслеживание статуса, обращение в техподдержку", "HTTPS")
+Rel(admin, auto_wash, "Управление автомойками, услугами, тарифами, расписанием, просмотр отчетов", "HTTPS")
+
+Rel(auto_wash, payment_system, "Обработка платежей", "REST")
+Rel(auto_wash, notification_system, "Отправка уведомлений", "REST")
+Rel(auto_wash, accounting_system, "Получение данных по прибыли", "REST")
+Rel(auto_wash, map_system, "Получение данных о местоположении автомоек", "REST")
+
+@enduml
+
+
+```
+
+</details>
+
+#### Level 2: Container Diagram
+![image](https://github.com/user-attachments/assets/8c3300bc-cc17-4b22-a131-c531d78659f6)
+
+<details>
+  <summary>Код C2</summary>
+  
+```plaintext
+
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+' Containers
+System_Boundary(c1, "Автомойка") {
+    Container(web_app, "Веб-приложение", "Java, Spring Boot", "Предоставляет интерфейс для клиентов и администраторов")
+    Container(mobile_app, "Мобильное приложение", "React Native", "Предоставляет интерфейс для клиентов")
+    Container(api, "API-сервис", "Java, Spring Boot", "Предоставляет API для веб- и мобильных приложений")
+    ContainerDb(db, "База данных", "PostgreSQL", "Хранит данные пользователей, автомоек, бронирований и т.д.")
+   Container(notification_service, "Сервис уведомлений", "Node.js", "Отправляет уведомления пользователям")
+}
+
+' External Systems
+System_Ext(payment_system, "Платежная система", "Сторонняя система для обработки платежей")
+System_Ext(accounting_system, "Система учета", "Сторонняя система для финансовой отчетности")
+System_Ext(map_system, "Картографическая система", "Сторонняя система для получения информации о местоположении")
+'Person
+Person(client, "Клиент", "Пользователь, заказывающий услуги автомойки")
+Person(admin, "Администратор", "Сотрудник автомойки, управляющий системой")
+
+
+' Relationships
+Rel(client, mobile_app, "Использует для заказа услуг")
+Rel(client, web_app, "Использует для заказа услуг и управления профилем")
+Rel(admin, web_app, "Использует для управления системой")
+Rel(mobile_app, api, "Использует API")
+Rel(web_app, api, "Использует API")
+Rel(api, db, "Использует для хранения данных", "JDBC")
+Rel(api, payment_system, "Использует для обработки платежей", "REST")
+Rel(api, notification_service, "Использует для отправки уведомлений", "REST")
+Rel(notification_service, notification_system, "Отправка уведомлений", "REST")
+Rel(api, accounting_system, "Получает данные для финансовой отчетности", "REST")
+Rel(api, map_system, "Получает данные о местоположении автомоек", "REST")
+@enduml
+
+
+```
+
+</details>
+
+### Sequence Diagrams
+#### Сценарий 1: Клиент бронирует автомойку
+![image](https://github.com/user-attachments/assets/db269325-cf7d-4f95-9b19-d3a8cc64936a)
+
+<details>
+  <summary>Код cценарий 1</summary>
+  
+```plaintext
+
+@startuml
+autonumber
+
+participant "Клиент" as client
+participant "Мобильное приложение" as mobile_app
+participant "API-сервис" as api
+participant "База данных" as db
+participant "Платежная система" as payment_system
+participant "Сервис уведомлений" as notification_service
+
+activate client
+    client -> mobile_app : Выбирает автомойку, услуги, дату и время
+    activate mobile_app
+        mobile_app -> api : Запрос на бронирование
+        activate api
+            api -> db : Проверка доступности времени
+            activate db
+                db --> api : Доступность подтверждена
+            deactivate db
+            api -> db : Запись данных бронирования
+            activate db
+                db --> api : Бронирование сохранено
+            deactivate db
+            api -> payment_system : Перенаправление на оплату
+            activate payment_system
+                payment_system --> api : Успешная оплата
+            deactivate payment_system
+             api -> db : Обновление статуса бронирования на "оплачено"
+             activate db
+                db --> api : Статус бронирования обновлен
+            deactivate db
+             api -> notification_service : Запрос на отправку уведомления
+             activate notification_service
+                notification_service --> api : Уведомление отправлено в систему уведомлений
+              deactivate notification_service
+            api --> mobile_app : Бронирование подтверждено
+        deactivate api
+    mobile_app --> client : Показ подтверждения бронирования
+deactivate mobile_app
+deactivate client
+@enduml
+
+
+```
+
+</details>
+
+#### Сценарий 2:  Оплата заказа пользователем
+![image](https://github.com/user-attachments/assets/04625788-8902-44fb-8758-c479d9f89fee)
+
+<details>
+  <summary>Код cценарий 2</summary>
+  
+```plaintext
+
+@startuml
+autonumber
+
+participant "Клиент" as client
+participant "Мобильное приложение" as mobile_app
+participant "API-сервис" as api
+participant "Платежная система" as payment_system
+participant "База данных" as db
+participant "Сервис уведомлений" as notification_service
+
+
+activate client
+    client -> mobile_app : Запрос на оплату бронирования
+    activate mobile_app
+        mobile_app -> api : Запрос на получение данных для оплаты
+        activate api
+            api -> db : Получение данных бронирования (общая стоимость и т.д.)
+            activate db
+                db --> api : Данные бронирования
+            deactivate db
+            api --> mobile_app : Данные для оплаты
+         deactivate api
+        mobile_app -> payment_system : Перенаправление на страницу оплаты
+        activate payment_system
+          payment_system --> mobile_app : Возврат результата оплаты
+       deactivate payment_system
+        mobile_app -> api : Запрос на фиксацию результата оплаты
+        activate api
+            api -> payment_system : Проверка статуса платежа
+            activate payment_system
+                payment_system --> api : Подтверждение успешности платежа
+            deactivate payment_system
+            api -> db : Обновление статуса платежа
+              activate db
+                db --> api : Статус платежа обновлен
+            deactivate db
+            api -> db : Обновление статуса бронирования
+             activate db
+                db --> api : Статус бронирования обновлен
+            deactivate db
+            api -> notification_service : Запрос на отправку уведомления об оплате
+            activate notification_service
+                  notification_service --> api : Уведомление отправлено в систему уведомлений
+               deactivate notification_service
+            api --> mobile_app : Успешная оплата, подтверждение
+         deactivate api
+         mobile_app --> client : Отображение подтверждения оплаты и бронирования
+   deactivate mobile_app
+deactivate client
+@enduml
+
+
+```
+
+</details>
