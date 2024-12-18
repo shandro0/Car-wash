@@ -13,7 +13,8 @@
 10.Я как родитель с маленькими детьми хочу находиться в комфортной зоне ожидания с Wi-Fi и напитками чтобы спокойно дождаться завершения мойки автомобиля.<br>
 
 ### 2.Use Case diagram
-![image](https://github.com/user-attachments/assets/66139228-fda7-44d8-bdca-4c456df1ad97)
+![image](https://github.com/user-attachments/assets/60fd2486-2254-48f9-87ed-9f38d078a556)
+
 
 
 <details>
@@ -21,31 +22,34 @@
   
 ```plantuml
 
+
 @startuml
 left to right direction
 actor "Клиент" as client
 rectangle "Платежная система" as ps
 rectangle  Мойка.ру  {
   usecase "Управлять своим профилем" as UC1
-  usecase "Найти мойку" as UC2
-  usecase "Выбрать дату и время" as UC3
-  usecase "Выбрать услугу" as UC4
-  usecase "Произвести оплату" as UC5
-  usecase "Отменять услуги" as UC6
-  usecase "Обратиться в техподдержку" as UC7
+  usecase "Записаться на мойку" as UC2
+  usecase "Найти мойку" as UC2.1
+  usecase "Выбрать дату и время" as UC2.2
+  usecase "Выбрать услугу" as UC2.3
+  usecase "Произвести оплату" as UC3
+  usecase "Отменять услуги" as UC4
+  usecase "Обратиться в техподдержку" as UC5
+  
 }
 client --> UC1
 client --> UC2
+UC2 --> UC2.1
+UC2 --> UC2.2
+UC2 --> UC2.3
 client --> UC3
 client --> UC4
 client --> UC5
-client --> UC6
-client --> UC7
-UC5 <-- ps
 
+UC3 --> ps
 
 @enduml
-
 
 ```
 
