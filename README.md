@@ -13,9 +13,7 @@
 10.Я как родитель с маленькими детьми хочу находиться в комфортной зоне ожидания с Wi-Fi и напитками чтобы спокойно дождаться завершения мойки автомобиля.<br>
 
 ### 2.Use Case diagram
-![image](https://github.com/user-attachments/assets/60fd2486-2254-48f9-87ed-9f38d078a556)
-
-
+![image](https://github.com/user-attachments/assets/3c5bff07-5ab0-4756-999c-04c76344b1f5)
 
 <details>
   <summary>Код Use Case</summary>
@@ -23,33 +21,39 @@
 ```plantuml
 
 
+
+
 @startuml
 left to right direction
 actor "Клиент" as client
-rectangle "Платежная система" as ps
+
 rectangle  Мойка.ру  {
-  usecase "Управлять своим профилем" as UC1
-  usecase "Записаться на мойку" as UC2
-  usecase "Найти мойку" as UC2.1
-  usecase "Выбрать дату и время" as UC2.2
-  usecase "Выбрать услугу" as UC2.3
-  usecase "Произвести оплату" as UC3
-  usecase "Отменять услуги" as UC4
-  usecase "Обратиться в техподдержку" as UC5
+  usecase "UC1:Управлять своим профилем" as UC1
+  usecase "UC2:Записаться на мойку" as UC2
+  usecase "UC2.1:Найти мойку" as UC2.1
+  usecase "UC2.2:Выбрать дату и время" as UC2.2
+  usecase "UC2.3:Выбрать услугу" as UC2.3
+  usecase "UC3:Произвести оплату" as UC3
+  usecase "UC4:Отменять услуги" as UC4
+  usecase "UC5:Обратиться в техподдержку" as UC5
   
 }
-client --> UC1
-client --> UC2
-UC2 --> UC2.1
-UC2 --> UC2.2
-UC2 --> UC2.3
-client --> UC3
-client --> UC4
-client --> UC5
+client ..> UC1:(exclude)
+client --> UC2:(include)
+UC2 --> UC2.1:(include)
+UC2 --> UC2.2:(include)
+UC2 --> UC2.3:(include)
+client ..> UC3:(exclude)
+client ..> UC4:(exclude)
+client ..> UC5:(exclude)
 
-UC3 --> ps
+
 
 @enduml
+
+@enduml
+
+
 
 ```
 
