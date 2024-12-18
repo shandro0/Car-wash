@@ -13,15 +13,13 @@
 10.Я как родитель с маленькими детьми хочу находиться в комфортной зоне ожидания с Wi-Fi и напитками чтобы спокойно дождаться завершения мойки автомобиля.<br>
 
 ### 2.Use Case diagram
-![image](https://github.com/user-attachments/assets/3c5bff07-5ab0-4756-999c-04c76344b1f5)
+![image](https://github.com/user-attachments/assets/86c565aa-c5e8-41dd-a50d-85f59ed5c317)
+
 
 <details>
   <summary>Код Use Case</summary>
   
 ```plantuml
-
-
-
 
 @startuml
 left to right direction
@@ -38,23 +36,16 @@ rectangle  Мойка.ру  {
   usecase "UC5:Обратиться в техподдержку" as UC5
   
 }
-client ..> UC1:(exclude)
-client --> UC2:(include)
+client --> UC1
+client --> UC2
 UC2 --> UC2.1:(include)
 UC2 --> UC2.2:(include)
 UC2 --> UC2.3:(include)
-client ..> UC3:(exclude)
-client ..> UC4:(exclude)
-client ..> UC5:(exclude)
-
-
+client --> UC3
+client --> UC4
+client --> UC5
 
 @enduml
-
-@enduml
-
-
-
 ```
 
 </details>
