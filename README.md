@@ -358,8 +358,9 @@ Rel(api, map_system, "Получает данные о местоположен�
 </details>
 
 ### Sequence Diagrams
-#### Сценарий 1: Клиент бронирует автомойку
-![image](https://github.com/user-attachments/assets/db269325-cf7d-4f95-9b19-d3a8cc64936a)
+
+![image](https://github.com/user-attachments/assets/e5f433ce-3582-482d-95ec-d9e680a3b3cc)
+
 
 <details>
   <summary>Код cценарий 1</summary>
@@ -367,45 +368,46 @@ Rel(api, map_system, "Получает данные о местоположен�
 ```plaintext
 
 @startuml
-autonumber
+actor Client
+actor Admin
+participant "Mobile App" as MobileApp
+participant "Web App" as WebApp
+participant "API Service" as APIService
+database "Database" as Database
+participant "Payment System" as PaymentSystem
+participant "Notification Service" as NotificationService
+participant "Accounting System" as AccountingSystem
+participant "Map System" as MapSystem
 
-participant "Клиент" as client
-participant "Мобильное приложение" as mobile_app
-participant "API-сервис" as api
-participant "База данных" as db
-participant "Платежная система" as payment_system
-participant "Сервис уведомлений" as notification_service
+Client -> MobileApp: Открывает приложение
+MobileApp -> APIService: Запрос списка автомоек
+APIService -> MapSystem: Получение данных о местоположении автомоек
+MapSystem --> APIService: Данные о местоположении
+APIService -> Database: Получение списка автомоек
+Database --> APIService: Список автомоек
+APIService --> MobileApp: Список автомоек
 
-activate client
-    client -> mobile_app : Выбирает автомойку, услуги, дату и время
-    activate mobile_app
-        mobile_app -> api : Запрос на бронирование
-        activate api
-            api -> db : Проверка доступности времени
-            activate db
-                db --> api : Доступность подтверждена
-            deactivate db
-            api -> db : Запись данных бронирования
-            activate db
-                db --> api : Бронирование сохранено
-            deactivate db
-            api -> payment_system : Перенаправление на оплату
-            activate payment_system
-                payment_system --> api : Успешная оплата
-            deactivate payment_system
-             api -> db : Обновление статуса бронирования на "оплачено"
-             activate db
-                db --> api : Статус бронирования обновлен
-            deactivate db
-             api -> notification_service : Запрос на отправку уведомления
-             activate notification_service
-                notification_service --> api : Уведомление отправлено в систему уведомлений
-              deactivate notification_service
-            api --> mobile_app : Бронирование подтверждено
-        deactivate api
-    mobile_app --> client : Показ подтверждения бронирования
-deactivate mobile_app
-deactivate client
+Client -> MobileApp: Выбирает автомойку и услугу
+MobileApp -> APIService: Запрос на создание бронирования
+APIService -> Database: Сохранение данных бронирования
+Database --> APIService: Успешное сохранение
+APIService -> PaymentSystem: Инициирование оплаты
+PaymentSystem --> APIService: Успешная оплата
+APIService -> NotificationService: Отправка уведомления о бронировании
+NotificationService --> Client: Уведомление о бронировании
+
+Admin -> WebApp: Открывает панель управления
+WebApp -> APIService: Запрос данных о бронированиях
+APIService -> Database: Получение данных о бронированиях
+Database --> APIService: Данные о бронированиях
+APIService --> WebApp: Данные о бронированиях
+Admin -> WebApp: Вносит изменения в бронирование
+WebApp -> APIService: Обновление данных бронирования
+APIService -> Database: Обновление данных
+Database --> APIService: Успешное обновление
+
+APIService -> AccountingSystem: Отправка данных для учета
+AccountingSystem --> APIService: Подтверждение получения данных
 @enduml
 
 
