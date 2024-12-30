@@ -182,7 +182,7 @@ client --> UC5
 Признак успешности:<br>
 Запрос в техподдержку успешно создан.<br>
 
-### 3.ERD
+### 3. ERD
 ![image](https://github.com/user-attachments/assets/f82b4368-7d8c-4fe9-9a8f-8bc74ad0b688)
 
 
@@ -260,7 +260,7 @@ Table Support {
 
 </details>
 
-### C4 Model
+### 4. C4 Model
 
 #### Level 1: System Context
 ![image](https://github.com/user-attachments/assets/6f2c9eda-f314-4478-a717-bbd1980ab585)
@@ -357,13 +357,13 @@ Rel(api, map_system, "Получает данные о местоположен�
 
 </details>
 
-### Sequence Diagrams
+### 5. Sequence Diagram
 
 ![image](https://github.com/user-attachments/assets/e5f433ce-3582-482d-95ec-d9e680a3b3cc)
 
 
 <details>
-  <summary>Код cценарий 1</summary>
+  <summary>Код Sequence Diagram</summary>
   
 ```plaintext
 
@@ -409,6 +409,587 @@ Database --> APIService: Успешное обновление
 APIService -> AccountingSystem: Отправка данных для учета
 AccountingSystem --> APIService: Подтверждение получения данных
 @enduml
+
+
+```
+
+</details>
+
+
+### 6. OpenAPI
+
+![image](https://github.com/user-attachments/assets/84f38366-fd48-45b5-98a0-0747c62061c4)
+
+![image](https://github.com/user-attachments/assets/7a0d0134-8aa6-473e-ba49-2ca4c2ba0a85)
+
+<details>
+  <summary>Код OpenAPI</summary>
+  
+```plaintext
+
+openapi: 3.0.3
+info:
+  title: Car Wash  API
+  description: API for managing clients, car washes, and services.
+  version: 1.0.0
+paths:
+  /clients:
+    get:
+      summary: Get all clients
+      tags:
+        - Clients
+      responses:
+        '200':
+          description: List of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+    post:
+      summary: Create a new client
+      tags:
+        - Clients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Client created
+  /clients/{clientId}:
+    get:
+      summary: Get a client by ID
+      tags:
+        - Clients
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Client details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+    put:
+      summary: Update a client by ID
+      tags:
+        - Clients
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '200':
+          description: Client updated
+    delete:
+      summary: Delete a client by ID
+      tags:
+        - Clients
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Client deleted
+  /car-washes:
+    get:
+      summary: Get all car washes
+      tags:
+        - Car Washes
+      responses:
+        '200':
+          description: List of car washes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarWash'
+    post:
+      summary: Create a new car wash
+      tags:
+        - Car Washes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarWash'
+      responses:
+        '201':
+          description: Car wash created
+  /car-washes/{carWashId}:
+    get:
+      summary: Get a car wash by ID
+      tags:
+        - Car Washes
+      parameters:
+        - name: carWashId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Car wash details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarWash'
+    put:
+      summary: Update a car wash by ID
+      tags:
+        - Car Washes
+      parameters:
+        - name: carWashId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarWash'
+      responses:
+        '200':
+          description: Car wash updated
+    delete:
+      summary: Delete a car wash by ID
+      tags:
+        - Car Washes
+      parameters:
+        - name: carWashId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Car wash deleted
+  /services:
+    get:
+      summary: Get all services
+      tags:
+        - Services
+      responses:
+        '200':
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+    post:
+      summary: Create a new service
+      tags:
+        - Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        '201':
+          description: Service created
+  /services/{serviceId}:
+    get:
+      summary: Get a service by ID
+      tags:
+        - Services
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Service details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+    put:
+      summary: Update a service by ID
+      tags:
+        - Services
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        '200':
+          description: Service updated
+    delete:
+      summary: Delete a service by ID
+      tags:
+        - Services
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Service deleted
+  /bookings:
+    get:
+      summary: Get all bookings
+      tags:
+        - Bookings
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      summary: Create a new booking
+      tags:
+        - Bookings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Booking created
+  /bookings/{bookingId}:
+    get:
+      summary: Get a booking by ID
+      tags:
+        - Bookings
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+    put:
+      summary: Update a booking by ID
+      tags:
+        - Bookings
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Booking updated
+    delete:
+      summary: Delete a booking by ID
+      tags:
+        - Bookings
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Booking deleted
+  /payments:
+    get:
+      summary: Get all payments
+      tags:
+        - Payments
+      responses:
+        '200':
+          description: List of payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+    post:
+      summary: Create a new payment
+      tags:
+        - Payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+      responses:
+        '201':
+          description: Payment created
+  /payments/{paymentId}:
+    get:
+      summary: Get a payment by ID
+      tags:
+        - Payments
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Payment details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+    put:
+      summary: Update a payment by ID
+      tags:
+        - Payments
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+      responses:
+        '200':
+          description: Payment updated
+    delete:
+      summary: Delete a payment by ID
+      tags:
+        - Payments
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Payment deleted
+  /support:
+    get:
+      summary: Get all support requests
+      tags:
+        - Support
+      responses:
+        '200':
+          description: List of support requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Support'
+    post:
+      summary: Create a new support request
+      tags:
+        - Support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Support'
+      responses:
+        '201':
+          description: Support request created
+  /support/{supportId}:
+    get:
+      summary: Get a support request by ID
+      tags:
+        - Support
+      parameters:
+        - name: supportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Support request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Support'
+    put:
+      summary: Update a support request by ID
+      tags:
+        - Support
+      parameters:
+        - name: supportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Support'
+      responses:
+        '200':
+          description: Support request updated
+    delete:
+      summary: Delete a support request by ID
+      tags:
+        - Support
+      parameters:
+        - name: supportId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Support request deleted
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        client_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+    CarWash:
+      type: object
+      properties:
+        car_wash_id:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+        rating:
+          type: number
+          format: float
+        contact_phone:
+          type: string
+    Service:
+      type: object
+      properties:
+        service_id:
+          type: integer
+        service_name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: decimal
+        duration:
+          type: integer
+    Booking:
+      type: object
+      properties:
+        booking_id:
+          type: integer
+        client_id:
+          type: integer
+        car_wash_id:
+          type: integer
+        booking_datetime:
+          type: string
+          format: date-time
+        status:
+          type: string
+        total_price:
+          type: number
+          format: decimal
+    Payment:
+      type: object
+      properties:
+        payment_id:
+          type: integer
+        booking_id:
+          type: integer
+        payment_datetime:
+          type: string
+          format: date-time
+        amount:
+          type: number
+          format: decimal
+        payment_status:
+          type: string
+        payment_method:
+          type: string
+    Support:
+      type: object
+      properties:
+        support_id:
+          type: integer
+        client_id:
+          type: integer
+        request_topic:
+          type: string
+        issue_description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        request_status:
+          type: string
 
 
 ```
